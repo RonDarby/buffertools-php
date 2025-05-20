@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace BitWasp\Buffertools\Tests;
 
-use \BitWasp\Buffertools\Buffer;
-use \BitWasp\Buffertools\Parser;
+use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\Parser;
 use PHPUnit\Framework\TestCase;
 
 class ParserTest extends TestCase
 {
-    public function testParserEmpty()
+    public function test_parser_empty()
     {
-        $parser = new Parser();
+        $parser = new Parser;
         $this->assertInstanceOf(Parser::class, $parser);
 
         $this->assertSame(0, $parser->getPosition());
@@ -20,7 +20,7 @@ class ParserTest extends TestCase
         $this->assertEmpty($parser->getBuffer()->getHex());
     }
 
-    public function testGetBuffer()
+    public function test_get_buffer()
     {
         $buffer = Buffer::hex('41414141');
 
@@ -28,48 +28,48 @@ class ParserTest extends TestCase
         $this->assertSame($parser->getBuffer()->getBinary(), $buffer->getBinary());
     }
 
-    public function testGetBufferEmptyNull()
+    public function test_get_buffer_empty_null()
     {
-        $buffer = new Buffer();
+        $buffer = new Buffer;
         $parser = new Parser($buffer);
         $parserData = $parser->getBuffer()->getBinary();
         $bufferData = $buffer->getBinary();
         $this->assertSame($parserData, $bufferData);
     }
 
-    public function testWriteBytes()
+    public function test_write_bytes()
     {
         $bytes = '41424344';
-        $parser = new Parser();
+        $parser = new Parser;
         $parser->writeBytes(4, Buffer::hex($bytes));
         $returned = $parser->getBuffer()->getHex();
         $this->assertSame($returned, '41424344');
     }
 
-    public function testWriteBytesFlip()
+    public function test_write_bytes_flip()
     {
         $bytes = '41424344';
-        $parser = new Parser();
+        $parser = new Parser;
         $parser->writeBytes(4, Buffer::hex($bytes), true);
         $returned = $parser->getBuffer()->getHex();
         $this->assertSame($returned, '44434241');
     }
 
-    public function testWriteBytesPadded()
+    public function test_write_bytes_padded()
     {
-        $parser = new Parser();
+        $parser = new Parser;
         $parser->writeBytes(4, Buffer::hex('34'));
-        $this->assertEquals("00000034", $parser->getBuffer()->getHex());
+        $this->assertEquals('00000034', $parser->getBuffer()->getHex());
     }
 
-    public function testWriteBytesFlipPadded()
+    public function test_write_bytes_flip_padded()
     {
-        $parser = new Parser();
+        $parser = new Parser;
         $parser->writeBytes(4, Buffer::hex('34'), true);
-        $this->assertEquals("34000000", $parser->getBuffer()->getHex());
+        $this->assertEquals('34000000', $parser->getBuffer()->getHex());
     }
 
-    public function testReadBytes()
+    public function test_read_bytes()
     {
         $bytes = '41424344';
 
@@ -81,7 +81,7 @@ class ParserTest extends TestCase
         $this->assertSame($bytes, $hex);
     }
 
-    public function testReadBytesFlip()
+    public function test_read_bytes_flip()
     {
         $bytes = '41424344';
 
@@ -95,22 +95,25 @@ class ParserTest extends TestCase
 
     /**
      * @expectedException \BitWasp\Buffertools\Exceptions\ParserOutOfRange
+     *
      * @expectedExceptionMessage Could not parse string of required length (empty)
      */
-    public function testReadBytesEmpty()
+    public function test_read_bytes_empty()
     {
         // Should return false because position is zero,
         // and length is zero.
 
-        $parser = new Parser();
+        $parser = new Parser;
         $data = $parser->readBytes(0);
-        $this->assertFalse(!!$data);
+        $this->assertFalse((bool) $data);
     }
+
     /**
      * @expectedException \BitWasp\Buffertools\Exceptions\ParserOutOfRange
+     *
      * @expectedExceptionMessage Could not parse string of required length (empty)
      */
-    public function testReadBytesEndOfString()
+    public function test_read_bytes_end_of_string()
     {
         $parser = new Parser('4041414142414141');
         $bytes1 = $parser->readBytes(4);
@@ -123,7 +126,7 @@ class ParserTest extends TestCase
     /**
      * @expectedException \Exception
      */
-    public function testReadBytesBeyondLength()
+    public function test_read_bytes_beyond_length()
     {
         $bytes = '41424344';
         $parser = new Parser($bytes);

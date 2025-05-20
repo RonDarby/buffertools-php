@@ -16,20 +16,12 @@ class ByteString extends AbstractType
      */
     private $length;
 
-    /**
-     * @param int           $length
-     * @param int           $byteOrder
-     */
     public function __construct(int $length, int $byteOrder = ByteOrder::BE)
     {
         $this->length = $length;
         parent::__construct($byteOrder);
     }
 
-    /**
-     * @param BufferInterface $string
-     * @return string
-     */
     public function writeBits(BufferInterface $string): string
     {
         $bits = str_pad(
@@ -43,13 +35,13 @@ class ByteString extends AbstractType
     }
 
     /**
-     * @param Buffer $string
-     * @return string
+     * @param  Buffer  $string
+     *
      * @throws \Exception
      */
     public function write($string): string
     {
-        if (!($string instanceof Buffer)) {
+        if (! ($string instanceof Buffer)) {
             throw new \InvalidArgumentException('FixedLengthString::write() must be passed a Buffer');
         }
 
@@ -64,13 +56,9 @@ class ByteString extends AbstractType
             STR_PAD_LEFT
         );
 
-        return pack("H*", $hex);
+        return pack('H*', $hex);
     }
 
-    /**
-     * @param BufferInterface $buffer
-     * @return string
-     */
     public function readBits(BufferInterface $buffer): string
     {
         return str_pad(
@@ -82,14 +70,12 @@ class ByteString extends AbstractType
     }
 
     /**
-     * @param Parser $parser
-     * @return BufferInterface
      * @throws \BitWasp\Buffertools\Exceptions\ParserOutOfRange
      */
     public function read(Parser $parser): BufferInterface
     {
         $bits = $this->readBits($parser->readBytes($this->length));
-        if (!$this->isBigEndian()) {
+        if (! $this->isBigEndian()) {
             $bits = $this->flipBits($bits);
         }
 

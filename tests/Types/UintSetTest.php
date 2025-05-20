@@ -4,25 +4,22 @@ declare(strict_types=1);
 
 namespace BitWasp\Buffertools\Tests\Types;
 
-use BitWasp\Buffertools\ByteOrder;
-use BitWasp\Buffertools\Tests\BinaryTest;
-use BitWasp\Buffertools\Types\UintInterface;
-use BitWasp\Buffertools\Types\Uint8;
-use BitWasp\Buffertools\Types\Uint16;
-use BitWasp\Buffertools\Types\Uint32;
-use BitWasp\Buffertools\Types\Uint64;
-use BitWasp\Buffertools\Types\Uint128;
-use BitWasp\Buffertools\Types\Uint256;
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Buffertools;
+use BitWasp\Buffertools\ByteOrder;
 use BitWasp\Buffertools\Parser;
+use BitWasp\Buffertools\Tests\BinaryTest;
+use BitWasp\Buffertools\Types\Uint128;
+use BitWasp\Buffertools\Types\Uint16;
+use BitWasp\Buffertools\Types\Uint256;
+use BitWasp\Buffertools\Types\Uint32;
+use BitWasp\Buffertools\Types\Uint64;
+use BitWasp\Buffertools\Types\Uint8;
+use BitWasp\Buffertools\Types\UintInterface;
 
 class UintSetTest extends BinaryTest
 {
-
     /**
-     * @param int $bitSize
-     * @param int $byteOrder
      * @return array
      */
     private function generateSizeBasedTests(int $bitSize, int $byteOrder)
@@ -36,10 +33,11 @@ class UintSetTest extends BinaryTest
             if ($byteOrder == ByteOrder::LE) {
                 $hex = Buffertools::flipBytes(Buffer::hex($hex))->getHex();
             }
+
             return [
                 $integer,
                 $hex,
-                null
+                null,
             ];
         };
 
@@ -47,7 +45,7 @@ class UintSetTest extends BinaryTest
             $test(0),
             $test(1),
             $test($halfPos),
-            $test($maxPos)
+            $test($maxPos),
         ];
     }
 
@@ -57,12 +55,12 @@ class UintSetTest extends BinaryTest
     public function getUintClasses(): array
     {
         return [
-            new Uint8(),
-            new Uint16(),
-            new Uint32(),
-            new Uint64(),
-            new Uint128(),
-            new Uint256(),
+            new Uint8,
+            new Uint16,
+            new Uint32,
+            new Uint64,
+            new Uint128,
+            new Uint256,
             new Uint8(ByteOrder::LE),
             new Uint16(ByteOrder::LE),
             new Uint32(ByteOrder::LE),
@@ -72,9 +70,6 @@ class UintSetTest extends BinaryTest
         ];
     }
 
-    /**
-     * @return array
-     */
     public function getAllTests(): array
     {
         $vectors = [];
@@ -84,16 +79,16 @@ class UintSetTest extends BinaryTest
                 $vectors[] = array_merge([$val], $t);
             }
         }
+
         return $vectors;
     }
 
     /**
      * @dataProvider getAllTests
-     * @param UintInterface $comp
-     * @param int|string $int
-     * @param string $eHex
+     *
+     * @param  int|string  $int
      */
-    public function testUint(UintInterface $comp, $int, string $eHex)
+    public function test_uint(UintInterface $comp, $int, string $eHex)
     {
         $binary = $comp->write($int);
         $this->assertEquals($eHex, str_pad(bin2hex($binary), $comp->getBitSize() / 4, '0', STR_PAD_LEFT));
@@ -105,18 +100,20 @@ class UintSetTest extends BinaryTest
 
     /**
      * @expectedException \InvalidArgumentException
+     *
      * @expectedExceptionMessage Must pass valid flag for endianness
      */
-    public function testUintInvalidOrder()
+    public function test_uint_invalid_order()
     {
         new Uint8(2);
     }
 
     /**
      * @expectedException \Exception
+     *
      * @expectedExceptionMessage Bit string length must be a multiple of 8
      */
-    public function testInvalidFlipLength()
+    public function test_invalid_flip_length()
     {
         $u = new Uint8(1);
         $u->flipBits('0');

@@ -10,34 +10,33 @@ use BitWasp\Buffertools\Parser;
 class VarInt extends AbstractType
 {
     /**
-     * @param \GMP $integer
      * @return array
      */
     public function solveWriteSize(\GMP $integer)
     {
         if (gmp_cmp($integer, gmp_pow(gmp_init(2), 16)) < 0) {
-            return [new Uint16(ByteOrder::LE), 0xfd];
-        } else if (gmp_cmp($integer, gmp_pow(gmp_init(2), 32)) < 0) {
-            return [new Uint32(ByteOrder::LE), 0xfe];
-        } else if (gmp_cmp($integer, gmp_pow(gmp_init(2), 64)) < 0) {
-            return [new Uint64(ByteOrder::LE), 0xff];
+            return [new Uint16(ByteOrder::LE), 0xFD];
+        } elseif (gmp_cmp($integer, gmp_pow(gmp_init(2), 32)) < 0) {
+            return [new Uint32(ByteOrder::LE), 0xFE];
+        } elseif (gmp_cmp($integer, gmp_pow(gmp_init(2), 64)) < 0) {
+            return [new Uint64(ByteOrder::LE), 0xFF];
         } else {
             throw new \InvalidArgumentException('Integer too large, exceeds 64 bit');
         }
     }
 
     /**
-     * @param \GMP $givenPrefix
      * @return UintInterface[]
+     *
      * @throws \InvalidArgumentException
      */
     public function solveReadSize(\GMP $givenPrefix)
     {
-        if (gmp_cmp($givenPrefix, 0xfd) === 0) {
+        if (gmp_cmp($givenPrefix, 0xFD) === 0) {
             return [new Uint16(ByteOrder::LE)];
-        } else if (gmp_cmp($givenPrefix, 0xfe) === 0) {
+        } elseif (gmp_cmp($givenPrefix, 0xFE) === 0) {
             return [new Uint32(ByteOrder::LE)];
-        } else if (gmp_cmp($givenPrefix, 0xff) === 0) {
+        } elseif (gmp_cmp($givenPrefix, 0xFF) === 0) {
             return [new Uint64(ByteOrder::LE)];
         }
 
@@ -46,30 +45,34 @@ class VarInt extends AbstractType
 
     /**
      * {@inheritdoc}
+     *
      * @see \BitWasp\Buffertools\Types\TypeInterface::write()
      */
     public function write($integer): string
     {
         $gmpInt = gmp_init($integer, 10);
-        if (gmp_cmp($gmpInt, gmp_init(0xfd, 10)) < 0) {
-            return pack("C", $integer);
+        if (gmp_cmp($gmpInt, gmp_init(0xFD, 10)) < 0) {
+            return pack('C', $integer);
         }
-        list ($int, $prefix) = $this->solveWriteSize($gmpInt);
-        return pack("C", $prefix) . $int->write($integer);
+        [$int, $prefix] = $this->solveWriteSize($gmpInt);
+
+        return pack('C', $prefix).$int->write($integer);
     }
 
     /**
      * {@inheritdoc}
+     *
      * @see \BitWasp\Buffertools\Types\TypeInterface::read()
      */
     public function read(Parser $parser)
     {
-        $byte = unpack("C", $parser->readBytes(1)->getBinary())[1];
-        if ($byte < 0xfd) {
+        $byte = unpack('C', $parser->readBytes(1)->getBinary())[1];
+        if ($byte < 0xFD) {
             return $byte;
         }
 
-        list ($uint) = $this->solveReadSize(gmp_init($byte, 10));
+        [$uint] = $this->solveReadSize(gmp_init($byte, 10));
+
         return $uint->read($parser);
     }
 }

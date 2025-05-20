@@ -11,34 +11,31 @@ use BitWasp\Buffertools\Types\Vector;
 
 class TemplateFactoryTest extends BinaryTest
 {
-    /**
-     * @return array
-     */
     public function getTestVectors(): array
     {
         $vectors = [];
 
         for ($i = 8; $i <= 256; $i = $i * 2) {
-            foreach (array('', 'le') as $byteOrder) {
+            foreach (['', 'le'] as $byteOrder) {
                 $vectors[] = [
-                    'uint' . $i . $byteOrder,
-                    '\BitWasp\Buffertools\Types\Uint' . $i,
+                    'uint'.$i.$byteOrder,
+                    '\BitWasp\Buffertools\Types\Uint'.$i,
                 ];
                 $vectors[] = [
-                    'int' . $i . $byteOrder,
-                    '\BitWasp\Buffertools\Types\Int' . $i,
+                    'int'.$i.$byteOrder,
+                    '\BitWasp\Buffertools\Types\Int'.$i,
                 ];
             }
         }
 
         $vectors[] = [
             'varint',
-            VarInt::class
+            VarInt::class,
         ];
 
         $vectors[] = [
             'varstring',
-            VarString::class
+            VarString::class,
         ];
 
         return $vectors;
@@ -46,10 +43,8 @@ class TemplateFactoryTest extends BinaryTest
 
     /**
      * @dataProvider getTestVectors
-     * @param string $function
-     * @param string $eClass
      */
-    public function testTemplateUint(string $function, string $eClass)
+    public function test_template_uint(string $function, string $eClass)
     {
         $factory = new TemplateFactory(null);
         $factory->$function();
@@ -59,13 +54,11 @@ class TemplateFactoryTest extends BinaryTest
         $this->assertInstanceOf($eClass, $template[0]);
     }
 
-    public function testVector()
+    public function test_vector()
     {
         $factory = new TemplateFactory(null);
         $factory->vector(
-            function () {
-                return;
-            }
+            function () {}
         );
         $template = $factory->getTemplate();
         $this->assertEquals(1, count($template));

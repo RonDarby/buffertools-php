@@ -4,49 +4,46 @@ declare(strict_types=1);
 
 namespace BitWasp\Buffertools\Tests\Types;
 
+use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\Tests\BinaryTest;
 use BitWasp\Buffertools\Types\VarInt;
 use BitWasp\Buffertools\Types\Vector;
-use BitWasp\Buffertools\Buffer;
-use BitWasp\Buffertools\Parser;
 
 class VectorTest extends BinaryTest
 {
-    public function testVector()
+    public function test_vector()
     {
-        $varint = new VarInt();
+        $varint = new VarInt;
         $vector = new Vector(
             $varint,
-            function () {
-                return;
-            }
+            function () {}
         );
 
         $buffer = Buffer::hex('010203040506070809000a0b0c0d0e0f');
         $array = [$buffer, $buffer, $buffer];
-        $this->assertEquals('03' . $buffer->getHex() . $buffer->getHex() . $buffer->getHex(), bin2hex($vector->write($array)));
+        $this->assertEquals('03'.$buffer->getHex().$buffer->getHex().$buffer->getHex(), bin2hex($vector->write($array)));
     }
 
     /**
      * @expectedException \InvalidArgumentException
+     *
      * @expectedExceptionMessage Vector::write() must be supplied with an array
      */
-    public function testWriteInvalid()
+    public function test_write_invalid()
     {
-        $varint = new VarInt();
+        $varint = new VarInt;
         $vector = new Vector(
             $varint,
-            function () {
-                return;
-            }
+            function () {}
         );
         $buffer = Buffer::hex('010203040506070809000a0b0c0d0e0f');
         $vector->write($buffer);
     }
 
-    public function testReadVector()
+    public function test_read_vector()
     {
-        $varint = new VarInt();
+        $varint = new VarInt;
         $vector = new Vector(
             $varint,
             function (Parser $parser) {

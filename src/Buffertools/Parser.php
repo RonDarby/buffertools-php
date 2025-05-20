@@ -26,11 +26,11 @@ class Parser
     /**
      * Instantiate class, optionally taking Buffer or HEX.
      *
-     * @param null|string|BufferInterface $input
+     * @param  null|string|BufferInterface  $input
      */
     public function __construct($input = null)
     {
-        if (null === $input) {
+        if ($input === null) {
             $input = '';
         }
 
@@ -39,7 +39,7 @@ class Parser
         } elseif ($input instanceof BufferInterface) {
             $bin = $input->getBinary();
         } else {
-            throw new \InvalidArgumentException("Invalid argument to Parser");
+            throw new \InvalidArgumentException('Invalid argument to Parser');
         }
 
         $this->string = $bin;
@@ -49,8 +49,6 @@ class Parser
 
     /**
      * Get the position pointer of the parser - ie, how many bytes from 0
-     *
-     * @return int
      */
     public function getPosition(): int
     {
@@ -70,9 +68,6 @@ class Parser
     /**
      * Parse $bytes bytes from the string, and return the obtained buffer
      *
-     * @param  int $numBytes
-     * @param  bool $flipBytes
-     * @return BufferInterface
      * @throws \Exception
      */
     public function readBytes(int $numBytes, bool $flipBytes = false): BufferInterface
@@ -99,10 +94,8 @@ class Parser
     /**
      * Write $data as $bytes bytes. Can be flipped if needed.
      *
-     * @param  integer $numBytes - number of bytes to write
-     * @param  SerializableInterface|BufferInterface|string $data - buffer, serializable or hex
-     * @param  bool $flipBytes
-     * @return Parser
+     * @param  int  $numBytes  - number of bytes to write
+     * @param  SerializableInterface|BufferInterface|string  $data  - buffer, serializable or hex
      */
     public function writeBytes(int $numBytes, $data, bool $flipBytes = false): Parser
     {
@@ -114,7 +107,7 @@ class Parser
         if (is_string($data)) {
             // Convert to a buffer
             $data = Buffer::hex($data, $numBytes);
-        } else if (!($data instanceof BufferInterface)) {
+        } elseif (! ($data instanceof BufferInterface)) {
             throw new \RuntimeException('Invalid data passed to Parser::writeBytes');
         }
 
@@ -125,23 +118,12 @@ class Parser
 
     /**
      * Write $data as $bytes bytes. Can be flipped if needed.
-     *
-     * @param  integer $numBytes
-     * @param  string $data
-     * @param  bool $flipBytes
-     * @return Parser
      */
     public function writeRawBinary(int $numBytes, string $data, bool $flipBytes = false): Parser
     {
         return $this->writeBuffer($numBytes, new Buffer($data, $numBytes), $flipBytes);
     }
 
-    /**
-     * @param BufferInterface $buffer
-     * @param bool $flipBytes
-     * @param int $numBytes
-     * @return Parser
-     */
     public function writeBuffer(int $numBytes, BufferInterface $buffer, bool $flipBytes = false): Parser
     {
         // only create a new buffer if the size does not match
@@ -154,22 +136,13 @@ class Parser
         return $this;
     }
 
-    /**
-     * @param BufferInterface $buffer
-     * @param bool $flipBytes
-     * @return Parser
-     */
     public function appendBuffer(BufferInterface $buffer, bool $flipBytes = false): Parser
     {
         $this->appendBinary($buffer->getBinary(), $flipBytes);
+
         return $this;
     }
 
-    /**
-     * @param string $binary
-     * @param bool $flipBytes
-     * @return Parser
-     */
     public function appendBinary(string $binary, bool $flipBytes = false): Parser
     {
         if ($flipBytes) {
@@ -178,13 +151,14 @@ class Parser
 
         $this->string .= $binary;
         $this->size += strlen($binary);
+
         return $this;
     }
 
     /**
      * Take an array containing serializable objects.
-     * @param SerializableInterface[]|BufferInterface[] $serializable
-     * @return Parser
+     *
+     * @param  SerializableInterface[]|BufferInterface[]  $serializable
      */
     public function writeArray(array $serializable): Parser
     {
@@ -209,8 +183,6 @@ class Parser
 
     /**
      * Return the string as a buffer
-     *
-     * @return BufferInterface
      */
     public function getBuffer(): BufferInterface
     {

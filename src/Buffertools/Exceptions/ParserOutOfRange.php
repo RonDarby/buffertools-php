@@ -2,6 +2,4 @@
 
 namespace BitWasp\Buffertools\Exceptions;
 
-class ParserOutOfRange extends \Exception
-{
-}
+class ParserOutOfRange extends \Exception {}

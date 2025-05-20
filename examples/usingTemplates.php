@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . "/../vendor/autoload.php";
+require __DIR__.'/../vendor/autoload.php';
 
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Parser;
@@ -11,7 +11,7 @@ $setBuffer = new Buffer('aaabccdeee');
 $setParser = new Parser($setBuffer);
 
 // Read data into $set
-$set = (new TemplateFactory())
+$set = (new TemplateFactory)
     ->bytestring(3)
     ->bytestring(1)
     ->bytestring(2)
@@ -27,12 +27,11 @@ print_r($set);
 // write each member as a buffer
 // a structure-specific parser reads the internal structure (not needed for writing)
 
-$vector = (new TemplateFactory())
-    ->vector(function () {
-    }) // can be null, since we're writing
+$vector = (new TemplateFactory)
+    ->vector(function () {}) // can be null, since we're writing
     ->getTemplate()
     ->write([$set]);
 
-echo $vector->getHex() . PHP_EOL;
+echo $vector->getHex().PHP_EOL;
 
-echo $vector->getBinary() . PHP_EOL;
+echo $vector->getBinary().PHP_EOL;

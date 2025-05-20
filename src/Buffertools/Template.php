@@ -13,9 +13,6 @@ class Template implements \Countable
      */
     private $template = [];
 
-    /**
-     * @param array $items
-     */
     public function __construct(array $items = [])
     {
         foreach ($items as $item) {
@@ -25,8 +22,8 @@ class Template implements \Countable
 
     /**
      * {@inheritdoc}
+     *
      * @see \Countable::count()
-     * @return int
      */
     public function count(): int
     {
@@ -45,25 +42,22 @@ class Template implements \Countable
 
     /**
      * Add a new TypeInterface to the Template
-     *
-     * @param  TypeInterface $item
-     * @return Template
      */
     public function addItem(TypeInterface $item): Template
     {
         $this->template[] = $item;
+
         return $this;
     }
 
     /**
      * Parse a sequence of objects from binary, using the current template.
      *
-     * @param  Parser $parser
      * @return mixed[]|Buffer[]|int[]|string[]
      */
     public function parse(Parser $parser): array
     {
-        if (0 == count($this->template)) {
+        if (count($this->template) == 0) {
             throw new \RuntimeException('No items in template');
         }
 
@@ -78,9 +72,6 @@ class Template implements \Countable
     /**
      * Write the array of $items to binary according to the template. They must
      * each be an instance of Buffer or implement SerializableInterface.
-     *
-     * @param  array $items
-     * @return BufferInterface
      */
     public function write(array $items): BufferInterface
     {

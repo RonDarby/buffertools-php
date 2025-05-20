@@ -18,10 +18,6 @@ class Vector extends AbstractType
      */
     private $readFxn;
 
-    /**
-     * @param VarInt   $varInt
-     * @param callable $readFunction
-     */
     public function __construct(VarInt $varInt, callable $readFunction)
     {
         $this->varint = $varInt;
@@ -31,15 +27,17 @@ class Vector extends AbstractType
 
     /**
      * {@inheritdoc}
+     *
      * @see \BitWasp\Buffertools\Types\TypeInterface::write()
      */
     public function write($items): string
     {
-        if (false === is_array($items)) {
+        if (is_array($items) === false) {
             throw new \InvalidArgumentException('Vector::write() must be supplied with an array');
         }
 
-        $parser = new Parser();
+        $parser = new Parser;
+
         return $parser
             ->writeArray($items)
             ->getBuffer()
@@ -48,14 +46,14 @@ class Vector extends AbstractType
 
     /**
      * {@inheritdoc}
+     *
      * @see \BitWasp\Buffertools\Types\TypeInterface::read()
-     * @param Parser $parser
-     * @return array
+     *
      * @throws \Exception
      */
     public function read(Parser $parser): array
     {
-        $results = array();
+        $results = [];
         $handler = $this->readFxn;
 
         $varInt = $this->varint->read($parser);

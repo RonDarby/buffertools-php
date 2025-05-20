@@ -13,13 +13,11 @@ use BitWasp\Buffertools\Types\SignedIntInterface;
 
 class IntSetTest extends BinaryTest
 {
-    /**
-     * @return array
-     */
     public function getIntSetVectors(): array
     {
         $int32_le = new Int32(ByteOrder::LE);
         $int32_be = new Int32(ByteOrder::BE);
+
         return [
             [$int32_be, '1', '00000001'],
             [$int32_le, '1', '01000000'],
@@ -31,12 +29,11 @@ class IntSetTest extends BinaryTest
     }
 
     /**
-     * @param SignedIntInterface $signed
-     * @param int|string $int
-     * @param string $expectedHex
+     * @param  int|string  $int
+     *
      * @dataProvider getIntSetVectors
      */
-    public function testInt(SignedIntInterface $signed, $int, string $expectedHex)
+    public function test_int(SignedIntInterface $signed, $int, string $expectedHex)
     {
         $out = $signed->write($int);
         $this->assertEquals($expectedHex, str_pad(bin2hex($out), $signed->getBitSize() / 4, '0', STR_PAD_LEFT));

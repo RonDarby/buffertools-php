@@ -9,17 +9,13 @@ use BitWasp\Buffertools\Parser;
 
 abstract class AbstractUint extends AbstractType implements UintInterface
 {
-    /**
-     * @param int $byteOrder
-     */
     public function __construct(int $byteOrder = ByteOrder::BE)
     {
         parent::__construct($byteOrder);
     }
 
     /**
-     * @param int|string $integer - decimal integer
-     * @return string
+     * @param  int|string  $integer  - decimal integer
      */
     public function writeBits($integer): string
     {
@@ -32,8 +28,8 @@ abstract class AbstractUint extends AbstractType implements UintInterface
     }
 
     /**
-     * @param Parser $parser
      * @return int|string
+     *
      * @throws \BitWasp\Buffertools\Exceptions\ParserOutOfRange
      * @throws \Exception
      */
@@ -58,12 +54,13 @@ abstract class AbstractUint extends AbstractType implements UintInterface
 
     /**
      * {@inheritdoc}
+     *
      * @see \BitWasp\Buffertools\Types\TypeInterface::write()
      */
     public function write($integer): string
     {
         return pack(
-            "H*",
+            'H*',
             str_pad(
                 gmp_strval(
                     gmp_init(
@@ -74,7 +71,7 @@ abstract class AbstractUint extends AbstractType implements UintInterface
                     ),
                     16
                 ),
-                $this->getBitSize()/4,
+                $this->getBitSize() / 4,
                 '0',
                 STR_PAD_LEFT
             )
@@ -83,6 +80,7 @@ abstract class AbstractUint extends AbstractType implements UintInterface
 
     /**
      * {@inheritdoc}
+     *
      * @see \BitWasp\Buffertools\Types\TypeInterface::read()
      */
     public function read(Parser $binary)

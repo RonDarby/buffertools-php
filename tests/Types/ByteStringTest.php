@@ -13,9 +13,6 @@ use BitWasp\Buffertools\Types\ByteString;
 
 class ByteStringTest extends BinaryTest
 {
-    /**
-     * @return array
-     */
     public function getVectors(): array
     {
         return [
@@ -27,17 +24,15 @@ class ByteStringTest extends BinaryTest
 
     /**
      * @dataProvider getVectors
-     * @param int $size
-     * @param string $string
      */
-    public function testByteString(int $size, string $string)
+    public function test_byte_string(int $size, string $string)
     {
         $buffer = Buffer::hex($string, $size);
 
         $t = new ByteString($size);
         $out = $t->write($buffer);
 
-        $this->assertEquals(pack("H*", $string), $out);
+        $this->assertEquals(pack('H*', $string), $out);
 
         $parser = new Parser(new Buffer($out));
         $this->assertEquals($string, $t->read($parser)->getHex());
@@ -45,17 +40,15 @@ class ByteStringTest extends BinaryTest
 
     /**
      * @dataProvider getVectors
-     * @param int $size
-     * @param string $string
      */
-    public function testByteStringLe(int $size, string $string)
+    public function test_byte_string_le(int $size, string $string)
     {
         $buffer = Buffer::hex($string, $size);
 
         $t = new ByteString($size, ByteOrder::LE);
         $out = $t->write($buffer);
 
-        $eFlipped = Buffertools::flipBytes(pack("H*", $string));
+        $eFlipped = Buffertools::flipBytes(pack('H*', $string));
         $this->assertEquals($eFlipped, $out);
 
         $parser = new Parser(new Buffer($out));

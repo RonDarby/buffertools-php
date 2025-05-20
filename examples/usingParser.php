@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__ . "/../vendor/autoload.php";
+require __DIR__.'/../vendor/autoload.php';
 
 use BitWasp\Buffertools\Buffer;
 use BitWasp\Buffertools\Parser;
@@ -16,9 +16,9 @@ $set = [
     $parser->readBytes(1),
     $parser->readBytes(1),
     $parser->readBytes(1),
-    $parser->readBytes(4)
+    $parser->readBytes(4),
 ];
 
 foreach ($set as $item) {
-    echo $item->getBinary() . PHP_EOL;
+    echo $item->getBinary().PHP_EOL;
 }

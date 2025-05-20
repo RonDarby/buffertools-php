@@ -10,17 +10,13 @@ use BitWasp\Buffertools\Parser;
 
 abstract class AbstractSignedInt extends AbstractType implements SignedIntInterface
 {
-    /**
-     * @param int $byteOrder
-     */
     public function __construct(int $byteOrder = ByteOrder::BE)
     {
         parent::__construct($byteOrder);
     }
 
     /**
-     * @param int|string $integer
-     * @return string
+     * @param  int|string  $integer
      */
     public function writeBits($integer): string
     {
@@ -33,8 +29,8 @@ abstract class AbstractSignedInt extends AbstractType implements SignedIntInterf
     }
 
     /**
-     * @param Parser $parser
      * @return int|string
+     *
      * @throws \BitWasp\Buffertools\Exceptions\ParserOutOfRange
      * @throws \Exception
      */
@@ -51,7 +47,7 @@ abstract class AbstractSignedInt extends AbstractType implements SignedIntInterf
         $isNegative = (ord($chars[$offsetIndex]) & 0x80) != 0x00;
         $number = gmp_init(ord($chars[$offsetIndex++]) & 0x7F, 10);
 
-        for ($i = 0; $i < $byteSize-1; $i++) {
+        for ($i = 0; $i < $byteSize - 1; $i++) {
             $number = gmp_or(gmp_mul($number, 0x100), ord($chars[$offsetIndex++]));
         }
 
@@ -64,6 +60,7 @@ abstract class AbstractSignedInt extends AbstractType implements SignedIntInterf
 
     /**
      * {@inheritdoc}
+     *
      * @see \BitWasp\Buffertools\Types\TypeInterface::write()
      */
     public function write($integer): string
@@ -74,9 +71,9 @@ abstract class AbstractSignedInt extends AbstractType implements SignedIntInterf
             $integer = gmp_add($integer, 1);
         }
 
-        $binary = Buffer::hex(str_pad(gmp_strval($integer, 16), $bitSize/4, '0', STR_PAD_LEFT), $bitSize/8);
+        $binary = Buffer::hex(str_pad(gmp_strval($integer, 16), $bitSize / 4, '0', STR_PAD_LEFT), $bitSize / 8);
 
-        if (!$this->isBigEndian()) {
+        if (! $this->isBigEndian()) {
             $binary = $binary->flip();
         }
 
@@ -85,6 +82,7 @@ abstract class AbstractSignedInt extends AbstractType implements SignedIntInterf
 
     /**
      * {@inheritdoc}
+     *
      * @see \BitWasp\Buffertools\Types\TypeInterface::read()
      */
     public function read(Parser $binary)

@@ -4,17 +4,14 @@ declare(strict_types=1);
 
 namespace BitWasp\Buffertools\Tests\Types;
 
+use BitWasp\Buffertools\Buffer;
+use BitWasp\Buffertools\Parser;
 use BitWasp\Buffertools\Tests\BinaryTest;
 use BitWasp\Buffertools\Types\VarInt;
 use BitWasp\Buffertools\Types\VarString;
-use BitWasp\Buffertools\Buffer;
-use BitWasp\Buffertools\Parser;
 
 class VarStringTest extends BinaryTest
 {
-    /**
-     * @return array
-     */
     public function getSampleVarStrings(): array
     {
         return array_map(function (string $value) {
@@ -28,14 +25,14 @@ class VarStringTest extends BinaryTest
     }
 
     /**
-     * @param string $input
      * @throws \BitWasp\Buffertools\Exceptions\ParserOutOfRange
      * @throws \Exception
+     *
      * @dataProvider getSampleVarStrings
      */
-    public function testGetVarString(string $input)
+    public function test_get_var_string(string $input)
     {
-        $varstring = new VarString(new VarInt());
+        $varstring = new VarString(new VarInt);
         $binary = $varstring->write(Buffer::hex($input));
 
         $parser = new Parser(new Buffer($binary));
@@ -46,22 +43,25 @@ class VarStringTest extends BinaryTest
 
     /**
      * @expectedException \BitWasp\Buffertools\Exceptions\ParserOutOfRange
+     *
      * @expectedExceptionMessage Insufficient data remaining for VarString
      */
-    public function testAbortsWithInvalidVarIntLength()
+    public function test_aborts_with_invalid_var_int_length()
     {
         $buffer = new Buffer("\x05\x00");
 
-        $varstring = new VarString(new VarInt());
+        $varstring = new VarString(new VarInt);
         $varstring->read(new Parser($buffer));
     }
+
     /**
      * @expectedException \InvalidArgumentException
+     *
      * @expectedExceptionMessage Must provide a buffer
      */
-    public function testFailsWithoutBuffer()
+    public function test_fails_without_buffer()
     {
-        $varstring = new VarString(new VarInt());
+        $varstring = new VarString(new VarInt);
         $varstring->write('');
     }
 }
